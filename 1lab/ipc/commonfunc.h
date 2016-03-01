@@ -15,8 +15,13 @@ namespace Utils {
     public:
         Process(const std::wstring& exeName, const std::wstring& comLine, LPSTARTUPINFO lpsi);
         Process(const std::wstring& exeName);
+        Process(const std::wstring& exeName, LPSTARTUPINFO lpsi);
         ~Process();
-        bool Create();
+        BOOL Create();
+        void CloseAllHandles();
+        BOOL CreateAndCloseAllHandels();
+        BOOL IsSteelActive();
+        BOOL TerminateMe(UINT uExitCode);
         HANDLE getProcessHandle();
         QString getProcessName() const { return processName; }
     };

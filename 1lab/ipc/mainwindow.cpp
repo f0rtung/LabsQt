@@ -21,10 +21,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_RunNotepad_clicked()
 {
     Utils::Process proc(L"Calc");
-    if( proc.Create() )
-    {
-
-    }
+    proc.CreateAndCloseAllHandels();
 }
 
 void MainWindow::on_runThreeProc_clicked()
@@ -67,28 +64,13 @@ void MainWindow::on_runThreeProc_clicked()
     QString stillActivProcessName;
     for( Utils::Process& proc : vecProc )
     {
-        DWORD exitCode;
-        if(GetExitCodeProcess(proc.getProcessHandle(), &exitCode) )
+        if( proc.IsSteelActive() )
         {
-            if( STILL_ACTIVE == exitCode )
-            {
-                if( TerminateProcess(proc.getProcessHandle(), -1) )
-                {
-                    qDebug() << proc.getProcessName() << " was terminate with exit code -1";
-                }
-                else
-                {
-                    qDebug() << "Cant terminate process!";
-                }
-            }
-            else
-            {
-                stillActivProcessName = proc.getProcessName();
-            }
+            proc.TerminateMe(-1);
         }
         else
         {
-            qDebug() << "Cant get exit code!" << GetLastError();
+            stillActivProcessName = proc.getProcessName();
         }
     }
     if( stillActivProcessName.size() != 0 )
