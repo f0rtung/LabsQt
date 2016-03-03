@@ -14,11 +14,13 @@ namespace Utils {
         PROCESS_INFORMATION pi;
     public:
         Process(const std::wstring& exeName, const std::wstring& comLine, LPSTARTUPINFO lpsi);
-        Process(const std::wstring& exeName);
         Process(const std::wstring& exeName, LPSTARTUPINFO lpsi);
+        Process(const std::wstring& exeName);
         ~Process();
         BOOL Create();
         void CloseAllHandles();
+        BOOL CloseThreadHandle();
+        BOOL CloseProcessHandle();
         BOOL CreateAndCloseAllHandels();
         BOOL IsSteelActive();
         BOOL TerminateMe(UINT uExitCode);

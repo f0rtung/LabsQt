@@ -17,6 +17,7 @@ Process::Process(const std::wstring &exeName, const std::wstring &comLine, LPSTA
         si = *lpsi;
     }
     ZeroMemory(&pi, sizeof(pi));
+
 }
 
 Process::Process(const std::wstring &exeName) : Process(exeName, L"", NULL)
@@ -51,32 +52,48 @@ BOOL Process::Create()
 
 void Process::CloseAllHandles()
 {
-    if(pi.hProcess)
-    {
-        if(!CloseHandle(pi.hProcess))
-        {
-            qDebug() << "Error close handle, idProcess: " << pi.dwProcessId;
-            qDebug() << "Last error: " << GetLastError();
-        }
-        else
-        {
-            qDebug() << "Process was closed, name " << processName << ", id " << QString::number(pi.dwProcessId);
-            pi.hProcess = 0;
-        }
-    }
+    CloseProcessHandle();
+    CloseThreadHandle();
+}
+
+BOOL Process::CloseThreadHandle()
+{
     if(pi.hThread)
     {
-        if(!CloseHandle(pi.hThread))
-        {
-            qDebug() << "Error close handle, idThread: " << pi.dwThreadId;
-            qDebug() << "Last error: " << GetLastError();
-        }
-        else
+        if (CloseHandle(pi.hThread) )
         {
             qDebug() << "Thread was closed, name " << processName << ", id " << QString::number(pi.dwThreadId);
             pi.hThread = 0;
+            return TRUE;
+        }
+        else
+        {
+            qDebug() << "Error close handle, idThread: " << pi.dwThreadId;
+            qDebug() << "Last error: " << GetLastError();
+            return FALSE;
         }
     }
+    return TRUE;
+}
+
+BOOL Process::CloseProcessHandle()
+{
+    if(pi.hProcess)
+    {
+        if(CloseHandle(pi.hProcess))
+        {
+            qDebug() << "Process was closed, name " << processName << ", id " << QString::number(pi.dwProcessId);
+            pi.hProcess = 0;
+            return TRUE;
+        }
+        else
+        {
+            qDebug() << "Error close handle, idProcess: " << pi.dwProcessId;
+            qDebug() << "Last error: " << GetLastError();
+            return FALSE;
+        }
+    }
+    return TRUE;
 }
 
 BOOL Process::CreateAndCloseAllHandels()

@@ -35,15 +35,16 @@ void MainWindow::on_runThreeProc_clicked()
     {
         if(proc.Create())
         {
+            proc.CloseThreadHandle();
             vecHandel.push_back(proc.getProcessHandle());
         }
     }
     DWORD resultOfWaiting = 0;
-    while( true )
+    while( TRUE )
     {
         resultOfWaiting = MsgWaitForMultipleObjects(  vecHandel.size(),
                                                       vecHandel.data(),
-                                                      false,
+                                                      FALSE,
                                                       INFINITE,
                                                       QS_ALLEVENTS );
         if( resultOfWaiting >= WAIT_OBJECT_0 &&
@@ -57,7 +58,8 @@ void MainWindow::on_runThreeProc_clicked()
             qDebug() << "Error waiting!";
         }
         MSG m;
-        while( PeekMessage(&m, 0, 0, 0, PM_REMOVE) ) {
+        while( PeekMessage(&m, 0, 0, 0, PM_REMOVE) )
+        {
             DispatchMessage(&m);
         }
     }
@@ -72,6 +74,7 @@ void MainWindow::on_runThreeProc_clicked()
         {
             stillActivProcessName = proc.getProcessName();
         }
+        proc.CloseProcessHandle();
     }
     if( stillActivProcessName.size() != 0 )
     {
