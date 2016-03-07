@@ -1,0 +1,3 @@
+First text from parent process!
+Text from childe process!
+Second text from parent process!
