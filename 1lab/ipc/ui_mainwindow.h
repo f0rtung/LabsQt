@@ -21,6 +21,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
@@ -47,6 +48,9 @@ public:
     QPushButton *pushButton;
     QPushButton *WriteMapFile;
     QPushButton *CloseMapFile;
+    QGroupBox *groupBox_4;
+    QTextEdit *textEdit;
+    QPushButton *pushButton_2;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -55,12 +59,12 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(546, 426);
+        MainWindow->resize(539, 526);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         exitButton = new QPushButton(centralWidget);
         exitButton->setObjectName(QStringLiteral("exitButton"));
-        exitButton->setGeometry(QRect(450, 10, 75, 23));
+        exitButton->setGeometry(QRect(424, 10, 101, 111));
         RunNotepad = new QPushButton(centralWidget);
         RunNotepad->setObjectName(QStringLiteral("RunNotepad"));
         RunNotepad->setGeometry(QRect(10, 10, 101, 23));
@@ -109,10 +113,19 @@ public:
         CloseMapFile = new QPushButton(groupBox_3);
         CloseMapFile->setObjectName(QStringLiteral("CloseMapFile"));
         CloseMapFile->setGeometry(QRect(380, 20, 111, 23));
+        groupBox_4 = new QGroupBox(centralWidget);
+        groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
+        groupBox_4->setGeometry(QRect(10, 370, 511, 101));
+        textEdit = new QTextEdit(groupBox_4);
+        textEdit->setObjectName(QStringLiteral("textEdit"));
+        textEdit->setGeometry(QRect(120, 10, 381, 81));
+        pushButton_2 = new QPushButton(groupBox_4);
+        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        pushButton_2->setGeometry(QRect(10, 20, 101, 71));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 546, 18));
+        menuBar->setGeometry(QRect(0, 0, 539, 18));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -144,6 +157,8 @@ public:
         pushButton->setText(QApplication::translate("MainWindow", "\320\241\320\276\320\267\320\264\320\260\321\202\321\214", 0));
         WriteMapFile->setText(QApplication::translate("MainWindow", "\320\227\320\260\320\277\320\270\321\201\320\260\321\202\321\214", 0));
         CloseMapFile->setText(QApplication::translate("MainWindow", "\320\227\320\260\320\272\321\200\321\213\321\202\321\214", 0));
+        groupBox_4->setTitle(QApplication::translate("MainWindow", "\320\237\320\276\321\201\320\273\320\265\320\264\320\275\320\265\320\265 \320\267\320\260\320\264\320\260\320\275\320\270\320\265", 0));
+        pushButton_2->setText(QApplication::translate("MainWindow", "Mapping File", 0));
     } // retranslateUi
 
 };

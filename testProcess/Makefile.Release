@@ -45,16 +45,16 @@ OBJECTS_DIR   = release
 
 SOURCES       = main.cpp \
 		mainwindow.cpp \
-		..\1lab\ipc\commonfunc.cpp release\moc_mainwindow.cpp
+		commonfunc.cpp release\moc_mainwindow.cpp
 OBJECTS       = release\main.obj \
 		release\mainwindow.obj \
 		release\commonfunc.obj \
 		release\moc_mainwindow.obj
 
 DIST          =  mainwindow.h \
-		..\1lab\ipc\commonfunc.h main.cpp \
+		commonfunc.h main.cpp \
 		mainwindow.cpp \
-		..\1lab\ipc\commonfunc.cpp
+		commonfunc.cpp
 QMAKE_TARGET  = testProcess
 DESTDIR        = release\ #avoid trailing-slash linebreak
 TARGET         = testProcess.exe
@@ -64,17 +64,45 @@ DESTDIR_TARGET = release\testProcess.exe
 
 .SUFFIXES: .c .cpp .cc .cxx
 
-.cpp.obj:
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fo$@ $<
+{release}.cpp{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
 
-.cc.obj:
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fo$@ $<
+{release}.cc{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
 
-.cxx.obj:
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fo$@ $<
+{release}.cxx{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
 
-.c.obj:
-	$(CC) -c $(CFLAGS) $(INCPATH) -Fo$@ $<
+{release}.c{release\}.obj::
+	$(CC) -c $(CFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{.}.cpp{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{.}.cc{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{.}.cxx{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{.}.c{release\}.obj::
+	$(CC) -c $(CFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
 
 ####### Build rules
 
@@ -87,7 +115,7 @@ $(OBJECTS) $(LIBS)
 <<
 
 qmake: FORCE
-	@$(QMAKE) -spec win32-msvc2013 -o Makefile.Release testProcess.pro
+	@$(QMAKE) -spec win32-msvc2013 "CONFIG+=debug" -o Makefile.Release testProcess.pro
 
 qmake_all: FORCE
 
@@ -221,6 +249,8 @@ release\moc_mainwindow.cpp: C:\Qt\5.5\msvc2013_64\include\QtWidgets\QMainWindow 
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qtouchdevice.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qtabwidget.h \
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qicon.h \
+		commonfunc.h \
+		C:\Qt\5.5\msvc2013_64\include\QtCore\QString \
 		mainwindow.h
 	C:\Qt\5.5\msvc2013_64\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -D_WIN64 -IC:/Qt/5.5/msvc2013_64/mkspecs/win32-msvc2013 -ID:/Programming/cpp/qt/LabsQt/testProcess -IC:/Qt/5.5/msvc2013_64/include -IC:/Qt/5.5/msvc2013_64/include/QtWidgets -IC:/Qt/5.5/msvc2013_64/include/QtGui -IC:/Qt/5.5/msvc2013_64/include/QtANGLE -IC:/Qt/5.5/msvc2013_64/include/QtCore mainwindow.h -o release\moc_mainwindow.cpp
 
@@ -350,6 +380,8 @@ release\main.obj: main.cpp mainwindow.h \
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qtouchdevice.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qtabwidget.h \
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qicon.h \
+		commonfunc.h \
+		C:\Qt\5.5\msvc2013_64\include\QtCore\QString \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QApplication \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qapplication.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\qcoreapplication.h \
@@ -357,7 +389,6 @@ release\main.obj: main.cpp mainwindow.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qdesktopwidget.h \
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qguiapplication.h \
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qinputmethod.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\main.obj main.cpp
 
 release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QMainWindow \
@@ -465,6 +496,8 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qtouchdevice.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qtabwidget.h \
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qicon.h \
+		commonfunc.h \
+		C:\Qt\5.5\msvc2013_64\include\QtCore\QString \
 		ui_mainwindow.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\QVariant \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QAction \
@@ -479,11 +512,13 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.5\msvc2013_64\include\QtGui\qinputmethod.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QButtonGroup \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qbuttongroup.h \
+		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QGroupBox \
+		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qgroupbox.h \
+		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qframe.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QHeaderView \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qheaderview.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qabstractitemview.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qframe.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\qitemselectionmodel.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qabstractitemdelegate.h \
@@ -496,6 +531,14 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qstyle.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qtabbar.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qrubberband.h \
+		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QLabel \
+		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QLineEdit \
+		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qlineedit.h \
+		C:\Qt\5.5\msvc2013_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.5\msvc2013_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.5\msvc2013_64\include\QtGui\qpen.h \
+		C:\Qt\5.5\msvc2013_64\include\QtGui\qtextoption.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QMenuBar \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qmenubar.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qmenu.h \
@@ -509,12 +552,9 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QWidget \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\QMessageBox \
 		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qmessagebox.h \
-		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qdialog.h \
-		../1lab/ipc/commonfunc.h \
-		C:\Qt\5.5\msvc2013_64\include\QtCore\QString
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\mainwindow.obj mainwindow.cpp
+		C:\Qt\5.5\msvc2013_64\include\QtWidgets\qdialog.h
 
-release\commonfunc.obj: ..\1lab\ipc\commonfunc.cpp ../1lab/ipc/commonfunc.h \
+release\commonfunc.obj: commonfunc.cpp commonfunc.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\QString \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\qstring.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\qchar.h \
@@ -582,10 +622,8 @@ release\commonfunc.obj: ..\1lab\ipc\commonfunc.cpp ../1lab/ipc/commonfunc.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\qpoint.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\qset.h \
 		C:\Qt\5.5\msvc2013_64\include\QtCore\qcontiguouscache.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\commonfunc.obj ..\1lab\ipc\commonfunc.cpp
 
 release\moc_mainwindow.obj: release\moc_mainwindow.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\moc_mainwindow.obj release\moc_mainwindow.cpp
 
 ####### Install
 

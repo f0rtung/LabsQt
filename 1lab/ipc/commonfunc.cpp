@@ -168,9 +168,35 @@ MyFile::MyFile(HANDLE hFile)
 
 MyFile::MyFile(const MyFile &file)
 {
-    this->fileHandle    = file.fileHandle;
+    if( !DuplicateHandle(GetCurrentProcess(),
+                        file.fileHandle,
+                        GetCurrentProcess(),
+                        &this->fileHandle,
+                        0,
+                        TRUE,
+                        DUPLICATE_SAME_ACCESS) )
+    {
+        this->fileHandle = NULL;
+    }
     this->pathToFile    = file.pathToFile;
     this->sa            = file.sa;
+}
+
+MyFile &MyFile::operator=(const MyFile &file)
+{
+    if( !DuplicateHandle(GetCurrentProcess(),
+                        file.fileHandle,
+                        GetCurrentProcess(),
+                        &this->fileHandle,
+                        0,
+                        TRUE,
+                        DUPLICATE_SAME_ACCESS) )
+    {
+        this->fileHandle = NULL;
+    }
+    this->pathToFile    = file.pathToFile;
+    this->sa            = file.sa;
+    return *this;
 }
 
 MyFile::~MyFile()
@@ -245,7 +271,7 @@ BOOL MyFile::WriteText(const std::wstring &someText)
 
 FileMapping::FileMapping(const MyFile &file)
 {
-    m_file = std::make_shared<MyFile>(new MyFile(file));
+    m_file = new MyFile(file);
     fileMapping = NULL;
     fileData    = NULL;
 }
@@ -265,6 +291,7 @@ FileMapping::FileMapping() : FileMapping(nullptr)
 FileMapping::~FileMapping()
 {
     CloseFileMap();
+    delete m_file;
 }
 
 void FileMapping::CloseFileMap()
@@ -293,19 +320,19 @@ void FileMapping::CloseFileMap()
     }
 }
 
-BOOL FileMapping::CreateMyFileMapping()
+BOOL FileMapping::CreateMyFileMapping(const std::wstring &lpName)
 {
-    return CreateMyFileMapping(0, 0);
+    return CreateMyFileMapping(lpName, 0, 0);
 }
 
-BOOL FileMapping::CreateMyFileMapping(DWORD high, DWORD low)
+BOOL FileMapping::CreateMyFileMapping(const std::wstring& lpName, DWORD dwMaximumSizeHigh, DWORD dwMaximumSizeLow)
 {
     fileMapping = CreateFileMapping(m_file == nullptr ? INVALID_HANDLE_VALUE : m_file->getFileHandle(),
                                     NULL,
                                     PAGE_READWRITE,
-                                    high,
-                                    low,
-                                    L"MemoryMapping");
+                                    dwMaximumSizeHigh,
+                                    dwMaximumSizeLow,
+                                    lpName.c_str());
     if( fileMapping != NULL )
     {
         qDebug() << "Create succsess!";
@@ -339,6 +366,20 @@ BOOL FileMapping::CreateMyMapViewOfFole()
 LPVOID FileMapping::getPointerToData()
 {
     return fileData;
+}
+
+void SendMessageAllWindows(const std::wstring& windowName, const std::wstring& messageName)
+{
+    HWND window = FindWindow(0,windowName.c_str());
+    UINT messageHandle = RegisterWindowMessage(messageName.c_str());
+    if( PostMessage(window, messageHandle, 0, 0) )
+    {
+
+    }
+    else
+    {
+        qDebug() << "Cant send some message!";
+    }
 }
 
 } //namespace Utils

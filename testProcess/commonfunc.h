@@ -40,6 +40,7 @@ namespace Utils {
         MyFile(const std::wstring &filePath, LPSECURITY_ATTRIBUTES lpsa);
         MyFile(HANDLE hFile);
         MyFile(const MyFile& file);
+        MyFile& operator=(const MyFile& file);
         ~MyFile();
         BOOL CreateMyFile();
         HANDLE getFileHandle();
@@ -50,7 +51,7 @@ namespace Utils {
     class FileMapping
     {
     private:
-        std::shared_ptr<MyFile> m_file;
+        MyFile* m_file;
         HANDLE fileMapping;
         LPVOID fileData;
     public:
@@ -59,11 +60,13 @@ namespace Utils {
         FileMapping();
         ~FileMapping();
         VOID CloseFileMap();
-        BOOL CreateMyFileMapping();
-        BOOL CreateMyFileMapping(DWORD high, DWORD low);
+        BOOL CreateMyFileMapping(const std::wstring& lpName);
+        BOOL CreateMyFileMapping(const std::wstring& lpName, DWORD dwMaximumSizeHigh, DWORD dwMaximumSizeLow);
         BOOL CreateMyMapViewOfFole();
         LPVOID getPointerToData();
     };
+
+    VOID SendMessageAllWindows(const std::wstring& windowName, const std::wstring& messageName);
 }
 #endif // COMMONFUNC
 

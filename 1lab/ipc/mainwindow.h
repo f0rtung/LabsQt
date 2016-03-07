@@ -11,10 +11,12 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     Utils::FileMapping file;
+    Utils::FileMapping* fileMapLastTask;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+protected:
+    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 private slots:
     void on_RunNotepad_clicked();
 
@@ -37,6 +39,10 @@ private slots:
     void on_CloseMapFile_clicked();
 
     void on_WriteMapFile_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_textEdit_textChanged();
 
 private:
     Ui::MainWindow *ui;

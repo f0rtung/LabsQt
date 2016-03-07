@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete fileMapLastTask;
     delete ui;
 }
 
@@ -154,15 +155,7 @@ void MainWindow::on_RunProcess_clicked()
 
 void MainWindow::on_pushButtonSendMessage_clicked()
 {
-    static UINT messageHandle = RegisterWindowMessage(L"TestMessage");
-    if( PostMessage(HWND_BROADCAST, messageHandle, 0, 0) )
-    {
-
-    }
-    else
-    {
-        qDebug() << "Cant send some message!";
-    }
+    Utils::SendMessageAllWindows(L"TestProcess", L"TestMessage");
 }
 
 void MainWindow::on_lineEdit_textChanged(const QString &arg1)
@@ -193,7 +186,7 @@ void MainWindow::on_pushButtonCreateFileMapping_clicked()
     if( file.CreateMyFile() )
     {
         Utils::FileMapping fileMapping(file);
-        if( fileMapping.CreateMyFileMapping() )
+        if( fileMapping.CreateMyFileMapping(L"mapFile") )
         {
             if( fileMapping.CreateMyMapViewOfFole() )
             {
@@ -208,12 +201,13 @@ void MainWindow::on_pushButtonCreateFileMapping_clicked()
 void MainWindow::on_pushButton_clicked()
 {
     using namespace Utils;
-    if( file.CreateMyFileMapping(0, 300) )
+    if( file.CreateMyFileMapping(L"MemoryMapping", 0, 300) )
     {
         if( file.CreateMyMapViewOfFole() )
         {
             ui->WriteMapFile->setEnabled(true);
             ui->CloseMapFile->setEnabled(true);
+            Utils::SendMessageAllWindows(L"TestProcess", L"CreateFileMapping");
         }
     }
 }
@@ -223,6 +217,7 @@ void MainWindow::on_CloseMapFile_clicked()
     file.CloseFileMap();
     ui->WriteMapFile->setEnabled(false);
     ui->CloseMapFile->setEnabled(false);
+    Utils::SendMessageAllWindows(L"TestProcess", L"CloseFileMapping");
 }
 
 void MainWindow::on_WriteMapFile_clicked()
@@ -239,4 +234,66 @@ void MainWindow::on_WriteMapFile_clicked()
     }
     qDebug() << "Write seccess!";
     qDebug() << static_cast<char*>(file.getPointerToData());
+    Utils::SendMessageAllWindows(L"TestProcess", L"WriteMessageToFileMap");
+}
+
+bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+    UNREFERENCED_PARAMETER(eventType);
+    MSG* myMessage = static_cast<MSG*>(message);
+    static UINT createFileMapping       = RegisterWindowMessage(L"CreateFileMapping");
+    static UINT closeFileMapping        = RegisterWindowMessage(L"CloseFileMapping");
+    static UINT writeMessageToMapFile   = RegisterWindowMessage(L"WriteMessageToFileMap");
+    if( myMessage->message == createFileMapping )
+    {
+        if( file.getPointerToData() == NULL )
+        {
+            on_pushButton_clicked();
+        }
+        *result = 0;
+        return true;
+    }
+    else if( myMessage->message == closeFileMapping )
+    {
+        ui->WriteMapFile->setEnabled(false);
+        ui->CloseMapFile->setEnabled(false);
+        *result = 0;
+        return true;
+    }
+    else if( myMessage->message == writeMessageToMapFile )
+    {
+        QString textFromEdit(static_cast<char*>(file.getPointerToData()));
+        ui->lineEdit_2->setText(textFromEdit);
+        *result = 0;
+        return true;
+    }
+    return false;
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    Utils::MyFile file(dirPath + L"testFile.txt");
+    if( file.CreateMyFile() )
+    {
+        fileMapLastTask = new Utils::FileMapping(file);
+        if( fileMapLastTask->CreateMyFileMapping(L"mapFile2") )
+        {
+            if( fileMapLastTask->CreateMyMapViewOfFole() )
+            {
+                LPVOID someData = fileMapLastTask->getPointerToData();
+                QString text(QString::fromStdString((char*)someData));
+                ui->textEdit->setText(text);
+            }
+        }
+    }
+}
+
+void MainWindow::on_textEdit_textChanged()
+{
+    std::string textFromEdit = ui->textEdit->toPlainText().toStdString();
+    for( size_t i = 0; i < textFromEdit.size(); i++ )
+    {
+        static_cast<char*>(fileMapLastTask->getPointerToData())[i] = textFromEdit[i];
+    }
+    Utils::SendMessageAllWindows(L"testProcess", L"ChangeLastTaskEdit");
 }
